@@ -116,65 +116,54 @@ allorad keys add testkey
 
 📌Join Allora Phase 2 Points program(Connect ur Kelpr Wallet) — https://app.allora.network/points/overview
 
-1️⃣🔤 Install Worker
+1️⃣0️⃣ Install Worker
 
 10.1 Install
-
-shell
-
+```
 cd $HOME && git clone https://github.com/allora-network/basic-coin-prediction-node
-
-shell
-
+```
+```
 cd basic-coin-prediction-node
-
-shell
-
+```
+```
 mkdir worker-data
-
-shell
-
+```
+```
 mkdir head-data
-
-Check If Directory is Created or Not — ls
+```
+Check If Directory is Created or Not — `` ls ``
 
 10.2 Give Certain Permissions
-
-shell
-
+```
 sudo chmod -R 777 worker-data
-
-shell
-
+```
+```
 sudo chmod -R 777 head-data
+```
 
 10.3 Create head keys
-
-shell
-
+```
 sudo docker run -it --entrypoint=bash -v ./head-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
+```
 
 10.4 Create worker keys
-
-shell
-
+```
 sudo docker run -it --entrypoint=bash -v ./worker-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
+```
 
 1️⃣1️⃣ Copy the head-id
-
-cat head-data/keys/identity - starts with 12D (This Is Your Head Id)
+``` cat head-data/keys/identity ```  starts with 12D (This Is Your Head Id)
 
 1️⃣2️⃣ Connect to Allora Chain
 
 12.1 Delete and create new docker-compose.yml file
-
-shell
-
+```
 rm -rf docker-compose.yml && nano docker-compose.yml
+```
 
 12.2 Copy & Paste the following code in it
 Replace head-id & WALLET_SEED_PHRASE
-
+```
 version: '3'
 
 services:
@@ -300,53 +289,44 @@ volumes:
   inference-data:
   worker-data:
   head-data:
-
+```
 
 To save: CTRL+X Then Enter Y Then Enter
 
 1️⃣3️⃣ Run worker
-
-shell
-
+```
 sudo docker compose build
-
-shell
-
+```
+```
 sudo docker compose up -d
-
+```
 
 1️⃣4️⃣Check your node status & Copy Worker Container ID
-
-shell
-
+```
 docker ps
+```
 
 1️⃣5️⃣ Replace CONTAINER_ID with the id of your docker containers
 
 Before That Make Sure you have Claim Faucet
-
-shell
-
+```
 docker logs -f CONTAINER_ID
-
+```
 
 Success: register node Tx Hash:= XXXXXX ( Copy and save)
 
 
 1️⃣6️⃣Now You Can Check Your Status By Running This Command
-
-shell
-
+```
 cd basic-coin-prediction-node
-
-shell
-
+```
+```
 docker ps
+```
 
-
- For Next Day Run This Command  [ Video Guide — https://t.me/sageairdrops/4912 ]
+🔶For Next Day Run This Command
 
 #1 Open docker 1st
-#2 cd basic-coin-prediction-node
-#3 sudo docker compose up -d
-#4 docker ps
+#2 ``` cd basic-coin-prediction-node ```
+#3 ``` sudo docker compose up -d ```
+#4 ``` docker ps ```
