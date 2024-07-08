@@ -1,0 +1,11 @@
+Allora Points System (Node + Testnet Task)
+
+https://app.allora.network/points/overview?ref=eyJyZWZlcnJlcl9pZCI6ImUwMTcxNzI1LTZhOGItNGZjMi1iODJiLTg4YzViNjBlNWQ2NiJ9
+
+
+Node System Requirements
+
+https://docs.allora.network/datasci/requirements
+
+
+Full Guide of Node Run in PC check Read Me file and follow the whole process
