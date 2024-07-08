@@ -1,32 +1,43 @@
-<h1> Node System Requirements <h1>
+## Node System Requirements
 
 https://docs.allora.network/datasci/requirements
 
+## Need Some Requirements for PC Users
+
+1. Install Docker - https://www.docker.com/products/docker-desktop/
+
+2. Install WSL - https://learn.microsoft.com/en-us/windows/wsl/install#install-wsl-command
+
+3. Install Ubuntu - 
+
+## For Mobile Users
+
+1. GitPod - https://www.gitpod.io/
+2. Repo - https://github.com/allora-network/allora-chain
+
+
 1️⃣. Install Packages
 
-shell
-
+```
 sudo apt update & sudo apt upgrade -y
 
 sudo apt install ca-certificates zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev curl git wget make jq build-essential pkg-config lsb-release libssl-dev libreadline-dev libffi-dev gcc screen unzip lz4 -y
+```
 
 2️⃣ Install Python3
 
-shell
-
+```
 sudo apt install python3
-
-shell
-
+```
+```
 python3 --version
-
-shell
-
+```
+```
 sudo apt install python3-pip
-
-shell
-
+```
+```
 pip3 --version
+```
 3️⃣ Install Docker
 
 shell
@@ -167,3 +178,182 @@ cat head-data/keys/identity - starts with 12D (This Is Your Head Id)
 shell
 
 rm -rf docker-compose.yml && nano docker-compose.yml
+
+12.2 Copy & Paste the following code in it
+Replace head-id & WALLET_SEED_PHRASE
+
+version: '3'
+
+services:
+  inference:
+    container_name: inference-basic-eth-pred
+    build:
+      context: .
+    command: python -u /app/app.py
+    ports:
+      - "8000:8000"
+    networks:
+      eth-model-local:
+        aliases:
+          - inference
+        ipv4_address: 172.22.0.4
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - ./inference-data:/app/data
+
+  updater:
+    container_name: updater-basic-eth-pred
+    build: .
+    environment:
+      - INFERENCE_API_ADDRESS=http://inference:8000
+    command: >
+      sh -c "
+      while true; do
+        python -u /app/update_app.py;
+        sleep 24h;
+      done
+      "
+    depends_on:
+      inference:
+        condition: service_healthy
+    networks:
+      eth-model-local:
+        aliases:
+          - updater
+        ipv4_address: 172.22.0.5
+
+  worker:
+    container_name: worker-basic-eth-pred
+    environment:
+      - INFERENCE_API_ADDRESS=http://inference:8000
+      - HOME=/data
+    build:
+      context: .
+      dockerfile: Dockerfile_b7s
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        if [ ! -f /data/keys/priv.bin ]; then
+          echo "Generating new private keys..."
+          mkdir -p /data/keys
+          cd /data/keys
+          allora-keys
+        fi
+        # Change boot-nodes below to the key advertised by your head
+        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
+          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
+          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/'head-id' \
+          --topic=1 \
+          --allora-chain-key-name=testkey \
+          --allora-chain-restore-mnemonic='WALLET_SEED_PHRASE' \
+          --allora-node-rpc-address=https://allora-rpc.edgenet.allora.network/ \
+          --allora-chain-topic-id=1
+    volumes:
+      - ./worker-data:/data
+    working_dir: /data
+    depends_on:
+      - inference
+      - head
+    networks:
+      eth-model-local:
+        aliases:
+          - worker
+        ipv4_address: 172.22.0.10
+
+  head:
+    container_name: head-basic-eth-pred
+    image: alloranetwork/allora-inference-base-head:latest
+    environment:
+      - HOME=/data
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        if [ ! -f /data/keys/priv.bin ]; then
+          echo "Generating new private keys..."
+          mkdir -p /data/keys
+          cd /data/keys
+          allora-keys
+        fi
+        allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
+          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:6000
+    ports:
+      - "6000:6000"
+    volumes:
+      - ./head-data:/data
+    working_dir: /data
+    networks:
+      eth-model-local:
+        aliases:
+          - head
+        ipv4_address: 172.22.0.100
+
+
+networks:
+  eth-model-local:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/24
+
+volumes:
+  inference-data:
+  worker-data:
+  head-data:
+
+
+To save: CTRL+X Then Enter Y Then Enter
+
+1️⃣3️⃣ Run worker
+
+shell
+
+sudo docker compose build
+
+shell
+
+sudo docker compose up -d
+
+
+1️⃣4️⃣Check your node status & Copy Worker Container ID
+
+shell
+
+docker ps
+
+1️⃣5️⃣ Replace CONTAINER_ID with the id of your docker containers
+
+Before That Make Sure you have Claim Faucet
+
+shell
+
+docker logs -f CONTAINER_ID
+
+
+Success: register node Tx Hash:= XXXXXX ( Copy and save)
+
+
+1️⃣6️⃣Now You Can Check Your Status By Running This Command
+
+shell
+
+cd basic-coin-prediction-node
+
+shell
+
+docker ps
+
+
+ For Next Day Run This Command  [ Video Guide — https://t.me/sageairdrops/4912 ]
+
+#1 Open docker 1st
+#2 cd basic-coin-prediction-node
+#3 sudo docker compose up -d
+#4 docker ps
