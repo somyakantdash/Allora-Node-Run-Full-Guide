@@ -111,7 +111,9 @@ allorad keys add testkey
 9️⃣ Import & Take Faucet
 
 ➡Import your key on keplr then copy your allora address 
+
 ➡Add chain - https://tinyurl.com/3xx87w73
+
 ➡Claim Faucet - https://faucet.edgenet.allora.network/
 
 📌Join Allora Phase 2 Points program(Connect ur Kelpr Wallet) — https://app.allora.network/points/overview
@@ -291,7 +293,7 @@ volumes:
   head-data:
 ```
 
-To save: CTRL+X Then Enter Y Then Enter
+Then save - CTRL+X Then Enter Y Then Enter
 
 1️⃣3️⃣ Run worker
 ```
@@ -327,6 +329,9 @@ docker ps
 🔶For Next Day Run This Command
 
 #1 Open docker 1st
+
 #2 ``` cd basic-coin-prediction-node ```
+
 #3 ``` sudo docker compose up -d ```
+
 #4 ``` docker ps ```
