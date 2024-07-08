@@ -116,7 +116,7 @@ allorad keys add testkey
 
 ➡Claim Faucet - https://faucet.edgenet.allora.network/
 
-📌Join Allora Phase 2 Points program(Connect ur Kelpr Wallet) — https://app.allora.network/points/overview
+📌Join Allora Phase 2 Points program(Connect ur Kelpr Wallet) — https://tinyurl.com/yasehd3x
 
 1️⃣0️⃣ Install Worker
 
