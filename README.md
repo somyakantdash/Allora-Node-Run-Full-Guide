@@ -347,10 +347,11 @@ docker-compose ls
 ```
 Name status config Files :
  basic-coin-prediction-node ,, running(4) ,, /root/allora/allora-chain/basic-coin-prediction-node/docker-compose.yml
- 
+ ![1000130616](https://github.com/user-attachments/assets/023e8415-1674-491c-910e-e7c714f24b56)
+
 Then copy ur path (Check above ss)
 Then Run This Command to Change ur Path (after cd put ur own docker path)
-cd ``` /root/allora/allora-chain/basic-coin-prediction-node/docker-compose.yml  ```
+cd ``` /root/allora/allora-chain/basic-coin-prediction-node ```
 
 OR
 
