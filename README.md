@@ -735,9 +735,9 @@ docker compose logs -f worker
 
 #2 ``` cd basic-coin-prediction-node ```
 
-#3 ``` docker compose ps ```
+#3 ``` sudo docker compose up -d ```
 
-#4 ``` docker compose logs -f worker ```
+#4 ``` docker ps ```
 
 
 
