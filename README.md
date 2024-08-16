@@ -590,3 +590,154 @@ curl --location 'http://localhost:6000/api/v1/functions/execute' --header 'Conte
 
 #4 ``` docker ps ```
 
+## Allora Worker Node V2 Testnet Upgrade
+![image](https://github.com/user-attachments/assets/52720bcc-a8f1-4fd2-9631-a0cd8e94b2d0)
+
+1️⃣ Find the path of ur docker-compose.yml (If ur node is already running, then run the below command)
+
+1.1 Find ur Docker Path
+```
+docker-compose ls
+```
+Name status config Files :
+ basic-coin-prediction-node ,, running(4) ,, /root/basic-coin-prediction-node/docker-compose.yml
+ 
+ ![1000130616](https://github.com/user-attachments/assets/023e8415-1674-491c-910e-e7c714f24b56)
+
+Then copy ur path (Check above ss)
+Then Run This Command to Change ur Path (after cd put ur own docker path)
+cd ``` /root/basic-coin-prediction-node ```
+
+OR
+
+1.2 If ur Node is already Down, then run this command
+```
+cd basic-coin-prediction-node
+```
+
+2️⃣ Make ur docker compose services down
+```
+sudo docker compose down -v
+```
+
+3️⃣ Clean up ur old containers
+```
+docker stop $(docker ps -aq) 2>/dev/null
+```
+```
+docker rm $(docker ps -aq) 2>/dev/null
+```
+```
+docker rmi -f $(docker images -aq) 2>/dev/null
+```
+
+4️⃣ Install Docker Compose
+```
+cd $HOME
+```
+```
+sudo rm -rf basic-coin-prediction-node
+```
+```
+git clone https://github.com/allora-network/basic-coin-prediction-node
+```
+```
+cd basic-coin-prediction-node
+```
+
+5️⃣ Steps to upgrade
+
+5.1 Open ur JSON File
+```
+nano config.json
+```
+
+5.2 Copy & Paste the following code in it
+Replace WALLET_SEED_PHRASE
+```
+{
+    "wallet": {
+        "addressKeyName": "testkey",
+        "addressRestoreMnemonic": "Seed Phrase",
+        "alloraHomeDir": "",
+        "gas": "1000000",
+        "gasAdjustment": 1.0,
+        "nodeRpc": "https://sentries-rpc.testnet-1.testnet.allora.network/",
+        "maxRetries": 1,
+        "delay": 1,
+        "submitTx": false
+    },
+    "worker": [
+        {
+            "topicId": 1,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 2,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 7,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        }
+    ]
+}
+```
+
+Then save - CTRL+X Then Enter Y Then Enter
+
+6️⃣ Take Faucet
+
+➡Claim Faucet - https://faucet.testnet-1.testnet.allora.network/
+
+📌Join Allora Phase V2 Points program(Connect ur Kelpr Wallet) — https://tinyurl.com/yasehd3x
+
+7️⃣ Make ur docker compose services build & up (After Faucet receive do these tasks)
+```
+chmod +x init.config
+./init.config
+```
+```
+docker compose up --build
+```
+
+8️⃣ Check your node status
+
+Open another WSL
+```
+cd basic-coin-prediction-node
+```
+```
+docker compose ps
+```
+```
+docker compose logs -f worker
+```
+
+🔶For Next Day Run This Command
+
+#1 Open docker 1st 
+
+#2 ``` cd basic-coin-prediction-node ```
+
+#3 ``` docker compose ps ```
+
+#4 ``` docker compose logs -f worker ```
+
+
+
