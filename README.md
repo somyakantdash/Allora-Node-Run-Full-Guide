@@ -740,4 +740,194 @@ docker compose logs -f worker
 #4 ``` docker ps ```
 
 
+## Allora Worker Node V2 2/3 Solution
 
+1️⃣ Find the path of ur docker-compose.yml (If ur node is already running, then run the below command)
+
+1.1 Find ur Docker Path
+```
+docker-compose ls
+```
+Name status config Files :
+ basic-coin-prediction-node ,, running(4) ,, /root/basic-coin-prediction-node/docker-compose.yml
+ 
+ ![1000130616](https://github.com/user-attachments/assets/023e8415-1674-491c-910e-e7c714f24b56)
+
+Then copy ur path (Check above ss)
+Then Run This Command to Change ur Path (after cd put ur own docker path)
+cd ``` /root/basic-coin-prediction-node ```
+
+OR
+
+1.2 If ur Node is already Down, then run this command
+```
+cd basic-coin-prediction-node
+```
+
+2️⃣ Make ur docker compose services down
+```
+sudo docker compose down -v
+```
+
+3️⃣ Clean up ur old containers
+```
+docker stop $(docker ps -aq) 2>/dev/null
+```
+```
+docker rm $(docker ps -aq) 2>/dev/null
+```
+```
+docker rmi -f $(docker images -aq) 2>/dev/null
+```
+
+4️⃣ 🅰️ Install dependecies
+```
+sudo apt update && sudo apt upgrade -y
+sudo apt install ca-certificates zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev curl git wget make jq build-essential pkg-config lsb-release libssl-dev libreadline-dev libffi-dev gcc screen unzip lz4 -y
+```
+```
+sudo apt install python3 -y
+python3 --version
+
+sudo apt install python3-pip -y
+pip3 --version
+```
+```
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+docker --version
+```
+```
+VER=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep tag_name | cut -d '"' -f 4)
+
+sudo curl -L "https://github.com/docker/compose/releases/download/$VER/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+```
+```
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
+4️⃣ 🅱️ Clone The Repository
+```
+git clone https://github.com/allora-network/basic-coin-prediction-node
+cd basic-coin-prediction-node
+```
+
+5️⃣ 🅰️ Configure your .env
+```
+cp .env.example .env
+```
+```
+nano .env
+```
+
+Copy & Paste the following code in it
+```
+TOKEN=ETH
+TRAINING_DAYS=30
+TIMEFRAME=4h
+MODEL=SVR
+REGION=US
+DATA_PROVIDER=binance
+CG_API_KEY=
+```
+
+Then save - CTRL+X Then Enter Y Then Enter
+
+5️⃣ 🅱️ Configure your config.json file
+```
+cp config.example.json config.json
+```
+
+5.1 Open ur JSON File
+```
+nano config.json
+```
+
+5.2 Copy & Paste the following code in it
+Replace 'YourSeedPhrase' & Edit addressKeyName as your allora address 'YourWalletName'
+```
+{
+    "wallet": {
+        "addressKeyName": "YourWalletName",
+        "addressRestoreMnemonic": "YourSeedPhrase",
+        "alloraHomeDir": "",
+        "gas": "auto",
+        "gasAdjustment": 1.5,
+        "nodeRpc": "https://allora-rpc.testnet.allora.network",
+        "maxRetries": 1,
+        "delay": 1,
+        "submitTx": true
+    },
+    "worker": [
+        {
+            "topicId": 1,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 2,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 2,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 4,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 7,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 6,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        }
+    ]
+}
+```
+
+Then save - CTRL+X Then Enter Y Then Enter
+
+6️⃣ Take Faucet
+
+➡Claim Faucet - https://faucet.testnet-1.testnet.allora.network/
+
+📌Join Allora Phase V2 Points program(Connect ur Kelpr Wallet) — https://tinyurl.com/yasehd3x
+
+7️⃣ Make ur docker compose services build & up (After Faucet receive do these tasks)
+```
+chmod +x init.config
+./init.config
+```
+```
+docker compose pull
+docker compose up --build -d
+```
+
+8️⃣ Check your node status
+
+```
+docker logs -f worker
+```
+
+🔶For Next Day Run This Command
+
+#1 Open docker 1st 
+
+#2 ``` cd basic-coin-prediction-node ```
+
+#3 ``` sudo docker compose up -d ```
+
+#4 ``` docker ps ```
